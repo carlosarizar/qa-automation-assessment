@@ -5,32 +5,13 @@ on:
     branches: [ main, develop ]
   pull_request:
     branches: [ main, develop ]
-  schedule:
-    # Run tests every day at 2 AM UTC
-    - cron: '0 2 * * *'
   workflow_dispatch:
-    inputs:
-      browser:
-        description: 'Browser to test'
-        required: false
-        default: 'chromium'
-        type: choice
-        options:
-          - chromium
-          - firefox
-          - webkit
-          - all
 
 jobs:
   test:
     name: Run Playwright Tests
     runs-on: ubuntu-latest
     timeout-minutes: 30
-    
-    strategy:
-      fail-fast: false
-      matrix:
-        shard: [1, 2, 3, 4]
     
     steps:
       # ===================================
@@ -64,104 +45,56 @@ jobs:
       # 5. RUN PLAYWRIGHT TESTS
       # ===================================
       - name: Run Playwright tests
-        run: npx playwright test --shard=${{ matrix.shard }}/4
+        run: npx playwright test
         continue-on-error: true
-        env:
-          CI: true
 
       # ===================================
-      # 6. UPLOAD TEST RESULTS (ALWAYS)
+      # 6. UPLOAD HTML REPORT
       # ===================================
-      - name: Upload blob report
+      - name: Upload HTML report
         if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: blob-report-${{ matrix.shard }}
-          path: blob-report/
-          retention-days: 1
-
-      # ===================================
-      # 7. UPLOAD SCREENSHOTS & VIDEOS
-      # ===================================
-      - name: Upload screenshots and videos
-        if: failure()
-        uses: actions/upload-artifact@v4
-        with:
-          name: test-artifacts-${{ matrix.shard }}
-          path: |
-            test-results/
-            screenshots/
-            videos/
-          retention-days: 7
-
-      # ===================================
-      # 8. UPLOAD TRACE FILES
-      # ===================================
-      - name: Upload trace files
-        if: failure()
-        uses: actions/upload-artifact@v4
-        with:
-          name: playwright-traces-${{ matrix.shard }}
-          path: test-results/**/*.zip
-          retention-days: 7
-
-  # ===================================
-  # MERGE REPORTS FROM ALL SHARDS
-  # ===================================
-  merge-reports:
-    name: Merge Test Reports
-    if: always()
-    needs: [test]
-    runs-on: ubuntu-latest
-    
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-          cache: 'npm'
-
-      - name: Install dependencies
-        run: npm ci
-
-      - name: Download blob reports
-        uses: actions/download-artifact@v4
-        with:
-          path: all-blob-reports
-          pattern: blob-report-*
-          merge-multiple: true
-
-      - name: Merge reports
-        run: npx playwright merge-reports --reporter html ./all-blob-reports
-
-      - name: Upload merged HTML report
         uses: actions/upload-artifact@v4
         with:
           name: playwright-report
           path: playwright-report/
-          retention-days: 14
+          retention-days: 30
 
-  # ===================================
-  # NOTIFICATION ON FAILURE (OPTIONAL)
-  # ===================================
-  notify:
-    name: Notify on Failure
-    if: failure()
-    needs: [test]
-    runs-on: ubuntu-latest
-    
-    steps:
-      - name: Create issue on failure
-        uses: actions/github-script@v7
+      # ===================================
+      # 7. UPLOAD TEST RESULTS
+      # ===================================
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v4
         with:
-          script: |
-            github.rest.issues.create({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              title: '🔴 Playwright Tests Failed',
-              body: `Playwright tests failed on ${context.ref}\n\nWorkflow: ${context.workflow}\nRun: ${context.runNumber}\n\nCheck the [workflow run](${context.payload.repository.html_url}/actions/runs/${context.runId}) for details.`,
-              labels: ['bug', 'automated-test-failure']
-            })
+          name: test-results
+          path: test-results/
+          retention-days: 7
+
+      # ===================================
+      # 8. UPLOAD SCREENSHOTS & VIDEOS (ON FAILURE)
+      # ===================================
+      - name: Upload failure artifacts
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: failure-artifacts
+          path: |
+            test-results/**/*.png
+            test-results/**/*.webm
+            test-results/**/*.zip
+          retention-days: 7
+          if-no-files-found: ignore
+
+      # ===================================
+      # 9. PUBLISH TEST RESULTS SUMMARY
+      # ===================================
+      - name: Publish test results
+        if: always()
+        run: |
+          echo "## Test Results Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          if [ -f test-results/results.json ]; then
+            echo "✅ Tests completed" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "❌ Tests failed to complete" >> $GITHUB_STEP_SUMMARY
+          fi
