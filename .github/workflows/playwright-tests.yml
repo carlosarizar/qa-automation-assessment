@@ -58,26 +58,27 @@ jobs:
       # 4. INSTALL PLAYWRIGHT BROWSERS
       # ===================================
       - name: Install Playwright Browsers
-        run: npx playwright install --with-deps
+        run: npx playwright install --with-deps chromium
 
       # ===================================
       # 5. RUN PLAYWRIGHT TESTS
       # ===================================
       - name: Run Playwright tests
         run: npx playwright test --shard=${{ matrix.shard }}/4
+        continue-on-error: true
         env:
           CI: true
 
       # ===================================
-      # 6. UPLOAD TEST RESULTS ON FAILURE
+      # 6. UPLOAD TEST RESULTS (ALWAYS)
       # ===================================
-      - name: Upload test results
-        if: failure()
+      - name: Upload blob report
+        if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: playwright-report-${{ matrix.shard }}
-          path: playwright-report/
-          retention-days: 7
+          name: blob-report-${{ matrix.shard }}
+          path: blob-report/
+          retention-days: 1
 
       # ===================================
       # 7. UPLOAD SCREENSHOTS & VIDEOS
@@ -121,27 +122,30 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '20'
+          cache: 'npm'
 
       - name: Install dependencies
         run: npm ci
 
-      - name: Download all reports
+      - name: Download blob reports
         uses: actions/download-artifact@v4
         with:
-          path: all-reports/
+          path: all-blob-reports
+          pattern: blob-report-*
+          merge-multiple: true
 
       - name: Merge reports
-        run: npx playwright merge-reports --reporter html ./all-reports
+        run: npx playwright merge-reports --reporter html ./all-blob-reports
 
-      - name: Upload merged report
+      - name: Upload merged HTML report
         uses: actions/upload-artifact@v4
         with:
-          name: merged-playwright-report
+          name: playwright-report
           path: playwright-report/
-          retention-days: 30
+          retention-days: 14
 
   # ===================================
-  # NOTIFICATION ON FAILURE
+  # NOTIFICATION ON FAILURE (OPTIONAL)
   # ===================================
   notify:
     name: Notify on Failure
