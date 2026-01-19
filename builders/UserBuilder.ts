@@ -1,6 +1,6 @@
 /**
  * Builder pattern for creating test user objects
- * Provides a fluent interface for test data creation
+ 
  */
 export class UserBuilder {
   private name: string = 'Test User';
@@ -80,8 +80,3 @@ export class UserBuilder {
       .withName('Regular User');
   }
 }
-
-// Usage Examples:
-// const user = new UserBuilder().withName('John').withEmail('john@test.com').build();
-// const admin = UserBuilder.admin().build();
-// const regularUser = UserBuilder.regular().withEmail('custom@test.com').build();

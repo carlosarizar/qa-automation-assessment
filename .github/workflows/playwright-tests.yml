@@ -94,7 +94,7 @@ jobs:
           echo "## Test Results Summary" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           if [ -f test-results/results.json ]; then
-            echo "✅ Tests completed" >> $GITHUB_STEP_SUMMARY
+            echo "Tests completed" >> $GITHUB_STEP_SUMMARY
           else
-            echo "❌ Tests failed to complete" >> $GITHUB_STEP_SUMMARY
+            echo "Tests failed to complete" >> $GITHUB_STEP_SUMMARY
           fi

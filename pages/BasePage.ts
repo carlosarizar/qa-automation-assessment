@@ -2,7 +2,6 @@ import { Page, Locator } from '@playwright/test';
 
 /**
  * Base Page Object class that all page objects should extend
- * Provides common functionality for all pages
  */
 export abstract class BasePage {
   protected page: Page;

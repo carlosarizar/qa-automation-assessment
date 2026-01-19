@@ -2,7 +2,7 @@
 
 Proyecto de pruebas automatizadas con Playwright para aplicaciones Angular y APIs REST.
 
-## 🚀 Configuración Inicial
+## Configuración Inicial
 
 ### Prerrequisitos
 
@@ -41,7 +41,7 @@ qa-automation-assessment/
 └── package.json
 ```
 
-## 🧪 Ejecutar Tests
+## Ejecutar Tests
 
 ### Todos los tests
 ```bash
@@ -73,7 +73,7 @@ npm run test:api
 npm run test:report
 ```
 
-## 🎯 Patrones de Diseño Implementados
+## Patrones de Diseño Implementados
 
 ### Page Object Model (POM)
 - **BasePage**: Clase base abstracta con funcionalidad común
@@ -83,23 +83,23 @@ npm run test:report
 ### Builder Pattern
 - **UserBuilder**: Construcción fluida de objetos de usuario para tests
 
-## 🏗️ Arquitectura de Tests
+## Arquitectura de Tests
 
 ### UI Tests (`tests/login.spec.ts`)
-- ✅ Login exitoso con credenciales válidas
-- ✅ Error con credenciales inválidas
-- ✅ Validación de campos vacíos
-- ✅ Navegación a "Forgot Password"
-- ✅ Toggle de "Remember Me"
+- Login exitoso con credenciales válidas
+- Error con credenciales inválidas
+- Validación de campos vacíos
+- Navegación a "Forgot Password"
+- Toggle de "Remember Me"
 
 ### API Tests (`tests/api/users.api.spec.ts`)
-- ✅ GET requests con validación de estructura
-- ✅ POST requests para crear recursos
-- ✅ PUT/DELETE requests
-- ✅ Casos negativos (404, datos inválidos)
-- ✅ Edge cases (payload vacío, caracteres especiales)
+- GET requests con validación de estructura
+- POST requests para crear recursos
+- PUT/DELETE requests
+- Casos negativos (404, datos inválidos)
+- Edge cases (payload vacío, caracteres especiales)
 
-## 🔧 Mejores Prácticas Implementadas
+## Mejores Prácticas Implementadas
 
 ### Selectores
 1. **getByRole()** - Primera opción (accesible)
@@ -117,15 +117,15 @@ npm run test:report
 - Sin dependencias compartidas
 - Datos únicos por test (timestamps, builders)
 
-## 🚀 CI/CD
+## CI/CD
 
 ### GitHub Actions
 El proyecto incluye un workflow completo que:
-- ✅ Se ejecuta en push/PR
-- ✅ Usa sharding (4 workers paralelos)
-- ✅ Instala dependencias y navegadores
-- ✅ Ejecuta tests
-- ✅ Sube artifacts en caso de fallo:
+- Se ejecuta en push/PR
+- Usa sharding (4 workers paralelos)
+- Instala dependencias y navegadores
+- Ejecuta tests
+- Sube artifacts en caso de fallo:
   - Screenshots
   - Videos
   - Traces
@@ -143,7 +143,7 @@ Los reportes y artifacts están disponibles en:
 GitHub → Actions → Workflow run → Artifacts
 ```
 
-## 📊 Reportes
+## Reportes
 
 ### HTML Report
 ```bash
@@ -156,7 +156,7 @@ Generado automáticamente en `test-results/results.json`
 ### JUnit Report
 Generado automáticamente en `test-results/results.xml`
 
-## 🐛 Debugging
+## Debugging
 
 ### Modo Debug
 ```bash
@@ -174,7 +174,7 @@ Cuando un test falla con retry, se genera un trace:
 npx playwright show-trace test-results/.zip
 ```
 
-## 🎨 Personalización
+## Personalización
 
 ### Cambiar navegador
 Editar `playwright.config.ts` y comentar/descomentar projects:
@@ -196,13 +196,13 @@ workers: process.env.CI ? 2 : 4
 retries: process.env.CI ? 2 : 0
 ```
 
-## 📚 Recursos
+## Recursos
 
 - [Playwright Documentation](https://playwright.dev)
 - [Playwright Best Practices](https://playwright.dev/docs/best-practices)
 - [Page Object Model](https://playwright.dev/docs/pom)
 
-## 🤝 Contribuir
+## Contribuir
 
 1. Fork el proyecto
 2. Crear una rama (`git checkout -b feature/nueva-funcionalidad`)
@@ -210,7 +210,7 @@ retries: process.env.CI ? 2 : 0
 4. Push a la rama (`git push origin feature/nueva-funcionalidad`)
 5. Crear Pull Request
 
-## 📝 Notas
+## Notas
 
 ### API de Prueba
 Los tests de API usan [JSONPlaceholder](https://jsonplaceholder.typicode.com/), un API REST falsa para testing y prototipos.
@@ -218,7 +218,7 @@ Los tests de API usan [JSONPlaceholder](https://jsonplaceholder.typicode.com/), 
 ### Aplicación Angular
 Los tests de UI asumen una aplicación Angular corriendo en `http://localhost:4200`. Ajusta la `baseURL` en `playwright.config.ts` según tu configuración.
 
-## ⚠️ Troubleshooting
+## Troubleshooting
 
 ### Los navegadores no se instalan
 ```bash

@@ -133,8 +133,6 @@ test.describe('Users API Tests', () => {
       data: invalidUser
     });
 
-    // Assert - JSONPlaceholder accepts anything, but in real API this should be 400
-    // Document the expected behavior
     expect(response.status()).toBeDefined();
   });
 
@@ -156,7 +154,6 @@ test.describe('Users API Tests', () => {
     });
 
     // Assert
-    // Note: JSONPlaceholder doesn't validate, but document expected behavior
     expect([200, 201, 400, 422]).toContain(response.status());
   });
 
